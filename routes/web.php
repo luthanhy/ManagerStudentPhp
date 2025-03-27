@@ -2,8 +2,24 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\NhanVienController;
+use App\Http\Controllers\AuthController;
 
+// Trang mặc định chuyển hướng đến trang đăng nhập
 Route::get('/', function () {
-    return view('welcome');
+    return redirect()->route('login');
 });
-Route::get('/nhanvien', [NhanVienController::class, 'index']);
+
+// Route đăng nhập
+Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
+Route::post('/login', [AuthController::class, 'login']);
+Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+
+// Các route yêu cầu đăng nhập
+Route::middleware('auth')->group(function () {
+    Route::get('/nhanvien', [NhanVienController::class, 'index']); // Xem danh sách nhân viên
+    Route::get('/nhanvien/create', [NhanVienController::class, 'create']);
+    Route::post('/nhanvien/store', [NhanVienController::class, 'store']);
+    Route::get('/nhanvien/edit/{id}', [NhanVienController::class, 'edit']); // Chỉnh sửa nhân viên
+    Route::post('/nhanvien/update/{id}', [NhanVienController::class, 'update']);
+    Route::post('/nhanvien/delete/{id}', [NhanVienController::class, 'destroy']);
+});

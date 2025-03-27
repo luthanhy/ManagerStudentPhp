@@ -22,10 +22,29 @@
             height: 40px;
             border-radius: 50%;
         }
+        .pagination-container {
+            margin-top: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .logout-container {
+            text-align: right;
+            margin-bottom: 10px;
+        }
     </style>
 </head>
 <body>
     <div class="container mt-4">
+        <div class="logout-container">
+            @if(Auth::check())
+            <form action="{{ route('logout') }}" method="POST" style="display: inline;">
+                @csrf
+                <button type="submit" class="btn btn-danger">Đăng xuất</button>
+            </form>
+            @endif
+        </div>
+
         <h2 class="text-primary">Danh sách nhân viên</h2>
         <div class="table-container">
             <table class="table table-bordered table-hover">
@@ -37,6 +56,9 @@
                         <th>Nơi Sinh</th>
                         <th>Tên Phòng</th>
                         <th>Lương</th>
+                        @if(Auth::check() && Auth::user()->role == 'admin')
+                            <th>Action</th>
+                        @endif
                     </tr>
                 </thead>
                 <tbody>
@@ -50,14 +72,29 @@
                         <td>{{ $nhanvien->Noi_Sinh }}</td>
                         <td>{{ $nhanvien->phongBan->Ten_Phong ?? 'Chưa có phòng' }}</td>
                         <td>{{ number_format($nhanvien->Luong) }} VND</td>
+                        @if(Auth::check() && Auth::user()->role == 'admin')
+                            <td>
+                                <a href="/nhanvien/edit/{{ $nhanvien->Ma_NV }}" class="btn btn-warning btn-sm">Sửa</a>
+                                <form method="POST" action="/nhanvien/delete/{{ $nhanvien->Ma_NV }}" style="display:inline;" onsubmit="return confirmDelete()">
+                                    @csrf
+                                    <button type="submit" class="btn btn-danger btn-sm">Xóa</button>
+                                </form>
+                            </td>
+                        @endif
                     </tr>
                     @endforeach
                 </tbody>
             </table>
-            <div class="d-flex justify-content-center">
+            <div class="pagination-container">
                 {{ $nhanviens->links('vendor.pagination.bootstrap-5') }}
             </div>
         </div>
     </div>
+
+    <script>
+        function confirmDelete() {
+            return confirm("Bạn có chắc chắn muốn xóa nhân viên này không?");
+        }
+    </script>
 </body>
 </html>

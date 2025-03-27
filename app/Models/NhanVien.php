@@ -11,6 +11,7 @@ class NhanVien extends Model
     protected $primaryKey = 'Ma_NV';
     public $incrementing = false;
     protected $fillable = ['Ma_NV', 'Ten_NV', 'Phai', 'Noi_Sinh', 'Ma_Phong', 'Luong'];
+    public $timestamps = false; // Tắt timestamps
 
     public function phongBan()
     {
