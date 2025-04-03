@@ -3,11 +3,25 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\NhanVienController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\SinhVienController;
+use App\Http\Controllers\DangKyHocPhanController;
 
 // Trang mặc định chuyển hướng đến trang đăng nhập
 Route::get('/', function () {
     return redirect()->route('login');
 });
+
+Route::resource('sinhvien', SinhVienController::class);
+
+Route::post('/sinhvien/delete/{MaSV}', [SinhVienController::class, 'destroy']); // Xóa sinh viênRoute::get('/dangky', [DangKyHocPhanController::class, 'index'])->name('dangky.index');
+Route::get('/dangky/cart', [DangKyHocPhanController::class, 'cart'])->name('dangky.cart');
+Route::post('/dangky/store', [DangKyHocPhanController::class, 'store'])->name('dangky.store');
+Route::delete('/dangky/{maHP}', [DangKyHocPhanController::class, 'destroy'])->name('dangky.destroy');
+Route::delete('/dangky/all', [DangKyHocPhanController::class, 'destroyAll'])->name('dangky.destroyAll');
+Route::get('/hocphan', [DangKyHocPhanController::class, 'index'])->name('hocphan.index');
+
+
+
 
 // Route đăng nhập
 Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
